@@ -26,7 +26,7 @@ function App() {
         isDrawing={isDrawing}
         setIsDrawing={setIsDrawing}
       />
-      <div className="relative w-full p-4 flex justify-between items-center border-b border-[#2a2a2a]/50 bg-[#1a1a1a]/80 backdrop-blur-md z-10">
+      <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center border-b border-[#2a2a2a] bg-[#1a1a1a]">
         <h1 className="text-xl font-medium text-[#efefef]">
           Doodle Placeholder Text
         </h1>
