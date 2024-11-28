@@ -1,0 +1,6 @@
+# all data files
+data/
+*.npy
+*.png
+*.jpg
+*.jpeg
