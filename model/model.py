@@ -1,27 +1,32 @@
-import tensorflow as tf
-import numpy as np
 import os
-import cv2
-import torch
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from torch.utils.data import DataLoader, Dataset
-from sklearn.model_selection import train_test_split
-import matplotlib.pyplot as plt
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization, Input
-from tensorflow.keras.regularizers import l2
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.mixed_precision import set_global_policy
-import cupy as cp
-import h5py
 import logging
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+import tensorflow as tf
+import cupy as cp
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+from tensorflow.keras.utils import custom_object_scope
 from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.layers import Dense, Dropout, Input
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Input
 from tensorflow.keras.models import Model
 from tensorflow.keras.models import load_model
-from tensorflow.keras.utils import custom_object_scope
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras.mixed_precision import set_global_policy
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+
+# Unused imports
+import h5py
+import cv2
+import torch
+import matplotlib.pyplot as plt
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from torch.utils.data import DataLoader, Dataset
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, BatchNormalization
+from tensorflow.keras.models import Sequential
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -112,9 +117,6 @@ X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.1,
 X_train = X_train.reshape(-1, 28, 28, 1)
 X_test = X_test.reshape(-1, 28, 28, 1)
 
-print("Training data shape:", X_train.shape)
-print("Testing data shape:", X_test.shape)
-
 num_samples = X_train.shape[0]
 
 total_elements = num_samples * 28 * 28
@@ -130,7 +132,16 @@ datagen = ImageDataGenerator(
     zoom_range=0.2,
     horizontal_flip=True
 )
-train_gen = datagen.flow(X_train, y_train, batch_size=32)
+
+input_shape = (28, 28, 3)
+
+X_train_rgb = np.repeat(X_train, 3, axis=-1)
+X_test_rgb = np.repeat(X_test, 3, axis=-1)
+
+print("Training data shape:", X_train_rgb.shape)
+print("Testing data shape:", X_test_rgb.shape)
+
+train_gen = datagen.flow(X_train_rgb, y_train, batch_size=32)
 
 """
 # Define a more complex model architecture
@@ -176,30 +187,30 @@ def create_model(input_shape, num_classes):
 def create_model(input_shape, num_classes):
     input_layer = Input(shape=input_shape)
 
-    base_model = MobileNetV2(input_tensor=input_layer, include_top=False, weights=None, alpha=0.5)
+    base_model = MobileNetV2(input_tensor=input_layer, include_top=False, weights='imagenet', alpha=0.5)
 
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
-    x = Dense(512, activation='relu')(x)
+    x = Dense(512, activation='relu', kernel_regularizer=l2(0.01))(x)
+    x = Dropout(0.5)(x)
     predictions = Dense(num_classes, activation='softmax')(x)
 
     model = Model(inputs=base_model.input, outputs=predictions)
 
-    model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=Adam(learning_rate=0.0001), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     return model
 
-input_shape = (28, 28, 1)
 num_classes = 345
 model = create_model(input_shape, num_classes)
 
-early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
-reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=3, min_lr=1e-6)
+early_stopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2, min_lr=1e-6)
 
 model.fit(
     train_gen,
-    steps_per_epoch=len(X_train) // 32,
+    steps_per_epoch=len(X_train_rgb) // 32,
     epochs=50,
-    validation_data=(X_test, y_test),
+    validation_data=(X_test_rgb, y_test),
     callbacks=[early_stopping, reduce_lr]
 )
 
@@ -208,10 +219,9 @@ tf.keras.models.save_model(
     include_optimizer=True, save_format=None,
     signatures=None, options=None)
 
-# Load the model with custom object scope if necessary
-with custom_object_scope({'Cast': tf.keras.layers.Layer}):  # Replace 'Cast' with the actual custom layer if needed
+with custom_object_scope({'Cast': tf.keras.layers.Layer}):
     model = load_model(os.path.join(os.path.realpath(__file__), '..', 'model', 'model.keras'))
 
-test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=2)
+test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test, verbose=2)
 print(f"Test Loss: {test_loss}")
 print(f"Test Accuracy: {test_accuracy}")
