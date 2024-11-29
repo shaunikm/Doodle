@@ -203,14 +203,15 @@ model.fit(
     callbacks=[early_stopping, reduce_lr]
 )
 
-# Save the model using the recommended Keras format
-model.save(os.path.join(os.path.realpath(__file__), '..', 'model', 'model.keras'))
+tf.keras.models.save_model(
+    model, os.path.join(os.path.realpath(__file__), '..', 'model', 'model.keras'), overwrite=True,
+    include_optimizer=True, save_format=None,
+    signatures=None, options=None)
 
 # Load the model with custom object scope if necessary
 with custom_object_scope({'Cast': tf.keras.layers.Layer}):  # Replace 'Cast' with the actual custom layer if needed
     model = load_model(os.path.join(os.path.realpath(__file__), '..', 'model', 'model.keras'))
 
-# Evaluate the model
 test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=2)
 print(f"Test Loss: {test_loss}")
 print(f"Test Accuracy: {test_accuracy}")
