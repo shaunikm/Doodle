@@ -1,10 +1,7 @@
 import os
-import logging
 import tensorflow as tf
-import cupy as cp
 import numpy as np
 from sklearn.model_selection import train_test_split
-
 from tensorflow.keras.utils import custom_object_scope
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.layers import Dense, Dropout, Input
@@ -15,20 +12,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras.mixed_precision import set_global_policy
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-
-# Unused imports
-import h5py
-import cv2
-import torch
-import matplotlib.pyplot as plt
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from torch.utils.data import DataLoader, Dataset
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, BatchNormalization
-from tensorflow.keras.models import Sequential
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
@@ -45,72 +29,13 @@ else:
     print("No GPUs found. Please check your CUDA and cuDNN installations.")
 
 try:
-    set_global_policy('mixed_float16')
-except Exception as e:
-    print("Error setting mixed precision:", e)
-
-def resize_image(image):
-    image_gpu = cp.asarray(image, dtype=cp.float32)
-    resized_image_gpu = cp.resize(image_gpu, (28, 28))
-    return cp.asnumpy(resized_image_gpu)
-
-"""
-# Create HDF5 dataset with threading and CuPy
-def create_hdf5_dataset(data, labels, hdf5_path):
-    with h5py.File(hdf5_path, 'w') as f:
-        f.create_dataset('data', (len(data), 28, 28, 1), dtype='float32')
-        f.create_dataset('labels', data=labels, dtype='int')
-        
-        def process_and_store(start, end, thread_id):
-            num_images = end - start
-            logging.info(f"Starting thread {thread_id}, with {num_images} images")
-            try:
-                resized_images = []
-                for img in data[start:end]:
-                    resized_img = resize_image(img)
-                    resized_img = np.expand_dims(resized_img, axis=-1)
-                    resized_images.append(resized_img)
-                f['data'][start:end] = np.array(resized_images, dtype='float32')
-            except Exception as e:
-                logging.error(f"Error in thread {thread_id}: {e}")
-            finally:
-                logging.info(f"Ending thread {thread_id}, with {num_images} images")
-
-        batch_size = 1000
-        futures = []
-        with ThreadPoolExecutor() as executor:
-            for thread_id, start in enumerate(range(0, len(data), batch_size)):
-                end = min(start + batch_size, len(data))
-                futures.append(executor.submit(process_and_store, start, end, thread_id))
-            
-            # Ensure all futures complete
-            for future in as_completed(futures):
-                try:
-                    future.result()  # This will raise any exceptions caught during execution
-                except Exception as e:
-                    logging.error(f"Exception in future: {e}")
-"""
-
-try:
     loaded = np.load(os.path.join(os.path.realpath(__file__), '..', 'data', 'quickdraw_dataset.npz'))
     data = loaded['data']
     labels = loaded['labels']
-    # create_hdf5_dataset(data, labels, os.path.join(os.path.realpath(__file__), '..', 'data', 'quickdraw_resized.hdf5'))
     print("Data and labels successfully loaded and resized!")
 except Exception as e:
     print("Error loading data:", e)
-"""
-# Data generator
-def data_generator(hdf5_path, batch_size):
-    with h5py.File(hdf5_path, 'r') as f:
-        data = f['data']
-        labels = f['labels']
-        num_samples = data.shape[0]
-        while True:
-            for start in range(0, num_samples, batch_size):
-                end = min(start + batch_size, num_samples)
-                yield data[start:end], labels[start:end]
-"""
+    quit(1)
 
 X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.1, random_state=42)
 
@@ -203,24 +128,45 @@ def create_model(input_shape, num_classes):
 num_classes = 345
 model = create_model(input_shape, num_classes)
 
-early_stopping = EarlyStopping(monitor='val_loss', patience=3, restore_best_weights=True)
-reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=2, min_lr=1e-6)
-
-model.fit(
-    train_gen,
-    steps_per_epoch=len(X_train_rgb) // 32,
-    epochs=50,
-    validation_data=(X_test_rgb, y_test),
-    callbacks=[early_stopping, reduce_lr]
+early_stopping = EarlyStopping(
+    monitor='val_loss',
+    patience=3,
+    restore_best_weights=True
 )
 
+reduce_lr = ReduceLROnPlateau(
+    monitor='val_loss',
+    factor=0.5,
+    patience=2,
+    min_lr=1e-6
+)
+
+checkpoint = ModelCheckpoint(
+    filepath=os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'),
+    save_best_only=True,
+    monitor='val_loss',
+    mode='min',
+    verbose=1
+)
+
+try:
+    model.fit(
+        train_gen,
+        steps_per_epoch=len(X_train_rgb) // 32,
+        epochs=10,
+        validation_data=(X_test_rgb, y_test),
+        callbacks=[early_stopping, reduce_lr, checkpoint]
+    )
+except KeyboardInterrupt:
+    print("Training interrupted... saving model now...")
+
 tf.keras.models.save_model(
-    model, os.path.join(os.path.realpath(__file__), '..', 'model', 'model.keras'), overwrite=True,
+    model, os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'), overwrite=True,
     include_optimizer=True, save_format=None,
     signatures=None, options=None)
 
 with custom_object_scope({'Cast': tf.keras.layers.Layer}):
-    model = load_model(os.path.join(os.path.realpath(__file__), '..', 'model', 'model.keras'))
+    model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'))
 
 test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test, verbose=2)
 print(f"Test Loss: {test_loss}")
