@@ -1,6 +1,7 @@
 # all data files
-data/
 *.npy
+*.npz
+*.hdf5
 *.png
 *.jpg
 *.jpeg
