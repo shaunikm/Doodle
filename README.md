@@ -43,4 +43,4 @@ These benchmarks are saved as images in [`model/cnn_benchmarks`](model/cnn_bench
 
 ## Acknowledgments 🙏
 
-This project uses the [Quick, Draw! Dataset](https://quickdraw.withgoogle.com/data) provided by Google. We thank Google for making this dataset available for research and educational purposes.
+This project uses the [Quick, Draw! Dataset](https://quickdraw.withgoogle.com/data) provided by Google. I went ahead and downloaded the dataset and compiled it into an `npz` file. You can access it [here](https://drive.google.com/drive/folders/1eCo87_mNv0MAS-3zTeKbxPg8cCcrVFNH).
