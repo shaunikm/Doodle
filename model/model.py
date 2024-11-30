@@ -15,6 +15,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
+import seaborn as sns
+import pandas as pd
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
@@ -70,47 +72,6 @@ print("Testing data shape:", X_test_rgb.shape)
 
 train_gen = datagen.flow(X_train_rgb, y_train, batch_size=32)
 
-"""
-# Define a more complex model architecture
-def create_model(input_shape, num_classes):
-    model = Sequential([
-        Input(shape=input_shape),
-        
-        # First block
-        Conv2D(64, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(0.01)),
-        BatchNormalization(),
-        Conv2D(64, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(0.01)),
-        BatchNormalization(),
-        MaxPooling2D((2, 2)),
-        Dropout(0.25),
-        
-        # Second block
-        Conv2D(128, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(0.01)),
-        BatchNormalization(),
-        Conv2D(128, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(0.01)),
-        BatchNormalization(),
-        MaxPooling2D((2, 2)),
-        Dropout(0.25),
-        
-        # Third block
-        Conv2D(256, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(0.01)),
-        BatchNormalization(),
-        Conv2D(256, (3, 3), activation='relu', padding='same', kernel_regularizer=l2(0.01)),
-        BatchNormalization(),
-        MaxPooling2D((2, 2)),
-        Dropout(0.25),
-        
-        # Fully connected layers
-        Flatten(),
-        Dense(512, activation='relu', kernel_regularizer=l2(0.01)),
-        Dropout(0.5),
-        Dense(num_classes, activation='softmax', dtype='float32')
-    ])
-    
-    model.compile(optimizer=Adam(learning_rate=0.0001), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    return model
-"""
-
 def create_model(input_shape, num_classes):
     input_layer = Input(shape=input_shape)
 
@@ -162,64 +123,6 @@ try:
 except KeyboardInterrupt:
     print("Training interrupted... saving model now...")
 
-# Plotting the training and validation loss
-plt.figure(figsize=(10, 5))
-plt.plot(history.history['loss'], label='Train Loss')
-plt.plot(history.history['val_loss'], label='Validation Loss')
-plt.title('Training and Validation Loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
-plt.grid(True)
-plt.savefig('benchmarks_loss.png')
-plt.close()
-
-# plotting the training and val accuracy
-plt.figure(figsize=(10, 5))
-plt.plot(history.history['accuracy'], label='Train Accuracy')
-plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-plt.title('Training and Validation Accuracy')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-plt.legend()
-plt.grid(True)
-plt.savefig('benchmarks_accuracy.png')
-plt.close()
-
-test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test)
-print(f"Test Loss: {test_loss}")
-print(f"Test Accuracy: {test_accuracy}")
-
-# predictions and confusion matrix
-y_pred = model.predict(X_test_rgb)
-y_pred_classes = np.argmax(y_pred, axis=1)
-y_true = np.argmax(y_test, axis=1)
-
-conf_matrix = confusion_matrix(y_true, y_pred_classes)
-print("Confusion Matrix:")
-print(conf_matrix)
-
-# classification Report
-class_report = classification_report(y_true, y_pred_classes)
-print("Classification Report:")
-print(class_report)
-
-# ROC curve and AUC
-fpr, tpr, _ = roc_curve(y_true, y_pred[:, 1])
-roc_auc = auc(fpr, tpr)
-
-plt.figure(figsize=(10, 5))
-plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
-plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-plt.xlim([0.0, 1.0])
-plt.ylim([0.0, 1.05])
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('Receiver Operating Characteristic')
-plt.legend(loc="lower right")
-plt.grid(True)
-plt.savefig('benchmarks_roc.png')
-plt.close()
 
 tf.keras.models.save_model(
     model, os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'), overwrite=True,
@@ -228,6 +131,63 @@ tf.keras.models.save_model(
 
 with custom_object_scope({'Cast': tf.keras.layers.Layer}):
     model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'))
+
+output_dir = os.path.join(os.path.dirname(__file__), 'mobilenet2.0_benchmarks')
+os.makedirs(output_dir, exist_ok=True)
+
+plt.figure(figsize=(10, 5))
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Training and Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.savefig(os.path.join(output_dir, 'benchmarks_loss.png'))
+plt.close()
+
+plt.figure(figsize=(10, 5))
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.grid(True)
+plt.savefig(os.path.join(output_dir, 'benchmarks_accuracy.png'))
+plt.close()
+
+test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test)
+print(f"Test Loss: {test_loss}")
+print(f"Test Accuracy: {test_accuracy}")
+
+y_pred = model.predict(X_test_rgb)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true = np.argmax(y_test, axis=1)
+
+conf_matrix = confusion_matrix(y_true, y_pred_classes)
+print("Confusion Matrix:")
+print(conf_matrix)
+
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.savefig(os.path.join(output_dir, 'confusion_matrix.png'))
+plt.close()
+
+class_report = classification_report(y_true, y_pred_classes, output_dict=True)
+print("Classification Report:")
+print(class_report)
+
+plt.figure(figsize=(10, 7))
+sns.heatmap(pd.DataFrame(class_report).iloc[:-1, :].T, annot=True, cmap='Blues')
+plt.title('Classification Report')
+plt.xlabel('Metrics')
+plt.ylabel('Classes')
+plt.savefig(os.path.join(output_dir, 'classification_report.png'))
+plt.close()
 
 test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test, verbose=2)
 print(f"Test Loss: {test_loss}")
