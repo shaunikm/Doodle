@@ -100,7 +100,7 @@ reduce_lr = ReduceLROnPlateau(
 )
 
 checkpoint = ModelCheckpoint(
-    filepath=os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'),
+    filepath=os.path.join(os.path.dirname(__file__), 'model', 'model.keras'),
     save_best_only=True,
     monitor='val_loss',
     mode='min',
@@ -120,12 +120,12 @@ except KeyboardInterrupt:
 
 
 tf.keras.models.save_model(
-    model, os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'), overwrite=True,
+    model, os.path.join(os.path.dirname(__file__), 'model', 'model.keras'), overwrite=True,
     include_optimizer=True, save_format=None,
     signatures=None, options=None)
 
 with custom_object_scope({'Cast': tf.keras.layers.Layer}):
-    model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'))
+    model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'model.keras'))
 
 test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test)
 print(f"Test Loss: {test_loss}")
