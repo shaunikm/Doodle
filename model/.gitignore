@@ -2,6 +2,3 @@
 *.npy
 *.npz
 *.hdf5
-*.png
-*.jpg
-*.jpeg
