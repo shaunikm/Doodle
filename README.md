@@ -83,7 +83,7 @@ To set up the project, follow these steps for both the `app` and `model` folders
 My project explores two model architectures for image classification tasks:
 
 ### [🧠 MobileNet2.0 Architecture](model/model/model.keras)
-You can view the source code [here](model/model/model.py). This architecture builds upon MobileNet2.0, focusing on reducing model complexity while maintaining high accuracy:
+You can view the source code [here](model/model.py). This architecture builds upon MobileNet2.0, focusing on reducing model complexity while maintaining high accuracy:
 
 - **Depthwise Separable Convolutions**: Utilized to decompose standard convolutions into a depthwise convolution followed by a pointwise convolution, significantly reducing the number of parameters and computational cost.
 - **Inverted Residuals with Linear Bottlenecks**: Implemented to enhance feature reuse and maintain a lightweight model structure. This involves using shortcut connections between bottleneck layers.
