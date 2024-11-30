@@ -1,16 +1,17 @@
-# Doodle
 <div align="center">
+  <h1>Doodle</h1>
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"/>
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/>
+  <br>
+  made by Shaunik Musukula
 </div>
 
 ## Table of Contents
-- [Model Architecture](#model-architecture)
-- [Performance Metrics](#performance-metrics)
-- [Benchmarks](#benchmarks)
-- [Acknowledgments](#acknowledgments)
+- [<code>🏗️ Model Architecture</code>](#model-architecture)
+- [<code>📊 Benchmarks</code>](#benchmarks)
+- [<code>🙏 Acknowledgments</code>](#acknowledgments)
 
-## Model Architecture
+## 🏗️ Model Architecture
 
 The model is a **Convolutional Neural Network (CNN)** designed for image classification tasks. It is structured with 3 convolutional blocks followed by fully connected layers. Each block consists of:
 
@@ -29,7 +30,7 @@ The model is compiled with the **Adam optimizer** and uses **sparse categorical 
 
 ---
 
-## Benchmarks
+## 📊 Benchmarks
 
 ### Confusion Matrix
 ![Confusion Matrix](model/cnn_benchmarks/confusion_matrix.png)
@@ -41,6 +42,6 @@ These benchmarks are saved as images in [model/cnn_benchmarks](model/cnn_benchma
 
 ---
 
-## Acknowledgments 🙏
+## 🙏 Acknowledgments
 
 This project uses the [Quick, Draw! Dataset](https://quickdraw.withgoogle.com/data) provided by Google. I went ahead and downloaded the dataset and compiled it into an `npz` file. You can access it [here](https://drive.google.com/drive/folders/1eCo87_mNv0MAS-3zTeKbxPg8cCcrVFNH).
