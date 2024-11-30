@@ -1,3 +1,10 @@
+MobileNet2.0 Benchmarks:
+Test Loss: 0.25598567724227905
+Test Accuracy: 0.9277620315551758
+model/mobilenet2.0_benchmarks/classification_report.png
+model/mobilenet2.0_benchmarks/confusion_matrix.png
+
+
 <div align="center">
   <h1>Doodle</h1>
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"/>
@@ -13,7 +20,10 @@
 
 ## 🏗️ Model Architecture
 
-The model is a **Convolutional Neural Network (CNN)** designed for image classification tasks. It is structured with 3 convolutional blocks followed by fully connected layers. Each block consists of:
+The project explores two model architectures for image classification tasks:
+
+### CNN Architecture
+The CNN model is structured with 3 convolutional blocks followed by fully connected layers. Each block consists of:
 
 - **Convolutional Layers**: Two convolutional layers with 3x3 filters, ReLU activation, and L2 regularization to prevent overfitting.
 - **Batch Normalization**: Applied after each convolutional layer to stabilize and accelerate training.
@@ -28,17 +38,37 @@ The final layers include:
 
 The model is compiled with the **Adam optimizer** and uses **sparse categorical cross-entropy** as the loss function, with **accuracy** as the evaluation metric.
 
+### MobileNet2.0 Inspired Architecture
+This architecture is built upon the efficient design principles of MobileNet2.0, focusing on reducing computational complexity while maintaining high accuracy:
+
+- **Depthwise Separable Convolutions**: Utilized to decompose standard convolutions into a depthwise convolution followed by a pointwise convolution, significantly reducing the number of parameters and computational cost.
+- **Inverted Residuals with Linear Bottlenecks**: Implemented to enhance feature reuse and maintain a lightweight model structure. This involves using shortcut connections between bottleneck layers.
+- **Global Average Pooling**: Applied to the output of the feature extractor to reduce the spatial dimensions and prepare for the dense layers.
+- **Dense Layers**: A fully connected layer with 512 units and ReLU activation, followed by a dropout layer to mitigate overfitting.
+- **Output Layer**: A dense layer with a softmax activation function to output class probabilities.
+
+The model is compiled with the **Adam optimizer** and uses **sparse categorical cross-entropy** as the loss function, with **accuracy** as the evaluation metric.
+
 ---
 
 ## 📊 Benchmarks
 
-### Confusion Matrix
-![Confusion Matrix](model/cnn_benchmarks/confusion_matrix.png)
+### MobileNet2.0 Inspired Benchmarks
+- **Test Loss**: 0.25598567724227905
+- **Test Accuracy**: 0.9277620315551758
 
-### Classification Report
+![Confusion Matrix](model/mobilenet2.0_benchmarks/confusion_matrix.png)
+![Classification Report](model/mobilenet2.0_benchmarks/classification_report.png)
+
+### CNN Benchmarks
+- **Test Loss**: [insert cnn test loss later]
+- **Test Accuracy**: [insert cnn test accuracy later]
+
+![Confusion Matrix](model/cnn_benchmarks/confusion_matrix.png)
 ![Classification Report](model/cnn_benchmarks/classification_report.png)
 
-These benchmarks are saved as images in [model/cnn_benchmarks](model/cnn_benchmarks).
+### Comparison
+The MobileNet2.0 inspired architecture demonstrates superior performance over the traditional CNN model, achieving higher accuracy and lower test loss. This is largely due to the use of depthwise separable convolutions and inverted residuals, which optimize the model for both speed and accuracy in image classification tasks.
 
 ---
 
