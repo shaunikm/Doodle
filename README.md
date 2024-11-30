@@ -65,6 +65,34 @@ The model is compiled with the **Adam optimizer** and uses **sparse categorical 
 ![Classification Report](model/cnn_benchmarks/classification_report.png)
 
 ### 🔍 Comparison
+
+| Model                | Test Loss | Test Accuracy |
+|----------------------|-----------|---------------|
+| MobileNet2.0         | 0.256     | 92.78%        |
+| CNN                  | 0.833     | 76.68%        |
+
+<div style="display: flex; justify-content: space-around;">
+  <div>
+    <h4>MobileNet2.0 Confusion Matrix</h4>
+    <img src="model/mobilenet2.0_benchmarks/confusion_matrix.png" alt="MobileNet2.0 Confusion Matrix" width="300"/>
+  </div>
+  <div>
+    <h4>CNN Confusion Matrix</h4>
+    <img src="model/cnn_benchmarks/confusion_matrix.png" alt="CNN Confusion Matrix" width="300"/>
+  </div>
+</div>
+
+<div style="display: flex; justify-content: space-around;">
+  <div>
+    <h4>MobileNet2.0 Classification Report</h4>
+    <img src="model/mobilenet2.0_benchmarks/classification_report.png" alt="MobileNet2.0 Classification Report" width="300"/>
+  </div>
+  <div>
+    <h4>CNN Classification Report</h4>
+    <img src="model/cnn_benchmarks/classification_report.png" alt="CNN Classification Report" width="300"/>
+  </div>
+</div>
+
 The MobileNet2.0-inspired architecture performs better than the traditional CNN model, with a test accuracy of 92.78% and a test loss of ~0.256, compared to the CNN's 76.68% accuracy and ~0.833 loss. This is due to the use of depthwise separable convolutions and inverted residuals, which improve efficiency in image classification.
 
 ---
