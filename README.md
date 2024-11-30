@@ -8,18 +8,92 @@
 
 ---
 
+## 📚 Installation
+
+To set up the project, follow these steps for both the `app` and `model` folders:
+
+### Prerequisites
+
+- Ensure you have Node.js and npm installed for the `app` folder.
+- Ensure you have Python 3.10 and pip installed for the `model` folder.
+
+### Setting up the `app` folder
+
+1. Navigate to the `app` directory:
+   ```bash
+   cd app
+   ```
+
+2. Install the dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+### Setting up the `model` folder
+
+1. Navigate to the `model` directory:
+   ```bash
+   cd model
+   ```
+
+2. Create a virtual environment (Python 3.10):
+   ```bash
+   python -m venv venv
+   ```
+
+3. Activate the virtual environment:
+
+   - On Windows:
+     ```bash
+     venv\Scripts\activate
+     ```
+
+   - On macOS/Linux:
+     ```bash
+     source venv/bin/activate
+     ```
+
+4. Install the required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+5. You're all set! :)
+
+---
+
 ## 📚 Table of Contents
-- [🏗️ Model Architecture](#model-architecture)
-- [📊 Benchmarks](#benchmarks)
-- [🙏 Acknowledgments](#acknowledgments)
+- [<code>🏗️ Model Architecture</code>](#model-architecture)
+  - [<code>🧠 MobileNet2.0 Architecture</code>](#🧠-mobilenet20-architecture)
+  - [<code>👁️ CNN Architecture</code>](#👁️-cnn-architecture)
+- [<code>📊 Benchmarks</code>](#📊-benchmarks)
+  - [<code>📈 Performance Summary</code>](#📈-performance-summary)
+  - [<code>🔍 Visual Comparisons</code>](#🔍-visual-comparisons)
+- [<code>🙏 Acknowledgments</code>](#🙏-acknowledgments)
 
 ---
 
 ## 🏗️ Model Architecture
 
-The project explores two model architectures for image classification tasks:
+My project explores two model architectures for image classification tasks:
 
-### 👁️ CNN Architecture
+### [🧠 MobileNet2.0 Architecture](model/model/model.keras)
+You can view the source code [here](model/model/model.py). This architecture builds upon MobileNet2.0, focusing on reducing model complexity while maintaining high accuracy:
+
+- **Depthwise Separable Convolutions**: Utilized to decompose standard convolutions into a depthwise convolution followed by a pointwise convolution, significantly reducing the number of parameters and computational cost.
+- **Inverted Residuals with Linear Bottlenecks**: Implemented to enhance feature reuse and maintain a lightweight model structure. This involves using shortcut connections between bottleneck layers.
+- **Global Average Pooling**: Applied to the output of the feature extractor to reduce the spatial dimensions and prepare for the dense layers.
+- **Dense Layers**: A fully connected layer with 512 units and ReLU activation, followed by a dropout layer to mitigate overfitting.
+- **Output Layer**: A dense layer with a softmax activation function to output class probabilities.
+
+The model is compiled with the **Adam optimizer** and uses **sparse categorical cross-entropy** as the loss function, with **accuracy** as the evaluation metric.
+
+### [👁️ CNN Architecture](model/model/cnn.keras)
 The CNN model is structured with 3 convolutional blocks followed by fully connected layers. Each block consists of:
 
 - **Convolutional Layers**: Two convolutional layers with 3x3 filters, ReLU activation, and L2 regularization to prevent overfitting.
@@ -35,65 +109,28 @@ The final layers include:
 
 The model is compiled with the **Adam optimizer** and uses **sparse categorical cross-entropy** as the loss function, with **accuracy** as the evaluation metric.
 
-### 🪶 MobileNet2.0 Architecture
-This architecture builds upon MobileNet2.0, focusing on reducing complexity while maintaining high accuracy:
-
-- **Depthwise Separable Convolutions**: Utilized to decompose standard convolutions into a depthwise convolution followed by a pointwise convolution, significantly reducing the number of parameters and computational cost.
-- **Inverted Residuals with Linear Bottlenecks**: Implemented to enhance feature reuse and maintain a lightweight model structure. This involves using shortcut connections between bottleneck layers.
-- **Global Average Pooling**: Applied to the output of the feature extractor to reduce the spatial dimensions and prepare for the dense layers.
-- **Dense Layers**: A fully connected layer with 512 units and ReLU activation, followed by a dropout layer to mitigate overfitting.
-- **Output Layer**: A dense layer with a softmax activation function to output class probabilities.
-
-The model is compiled with the **Adam optimizer** and uses **sparse categorical cross-entropy** as the loss function, with **accuracy** as the evaluation metric.
-
 ---
 
 ## 📊 Benchmarks
 
-### 📈 MobileNet2.0 Inspired Benchmarks
-- **Test Loss**: 0.25598567724227905
-- **Test Accuracy**: 0.9277620315551758
-
-![Confusion Matrix](model/mobilenet2.0_benchmarks/confusion_matrix.png)
-![Classification Report](model/mobilenet2.0_benchmarks/classification_report.png)
-
-### 📉 CNN Benchmarks
-- **Test Loss**: 0.8327332735061646
-- **Test Accuracy**: 0.7668496966362
-
-![Confusion Matrix](model/cnn_benchmarks/confusion_matrix.png)
-![Classification Report](model/cnn_benchmarks/classification_report.png)
-
-### 🔍 Comparison
+### 📈 Performance Summary
 
 | Model                | Test Loss | Test Accuracy |
 |----------------------|-----------|---------------|
-| MobileNet2.0         | 0.256     | 92.78%        |
-| CNN                  | 0.833     | 76.68%        |
+| 🧠 MobileNet2.0         | ~0.256     | 92.78%        |
+| 👁️ CNN                  | ~0.833     | 76.68%        |
 
-<div style="display: flex; justify-content: space-around;">
-  <div>
-    <h4>MobileNet2.0 Confusion Matrix</h4>
-    <img src="model/mobilenet2.0_benchmarks/confusion_matrix.png" alt="MobileNet2.0 Confusion Matrix" width="300"/>
-  </div>
-  <div>
-    <h4>CNN Confusion Matrix</h4>
-    <img src="model/cnn_benchmarks/confusion_matrix.png" alt="CNN Confusion Matrix" width="300"/>
-  </div>
-</div>
+The MobileNet2.0 architecture performs better than the CNN, with a test accuracy of 92.78% and a test loss of ~0.256, compared to the CNN's 76.68% accuracy and ~0.833 loss. This is probably due to the use of depthwise separable convolutions and inverted residuals, which improve efficiency in image classification.
 
-<div style="display: flex; justify-content: space-around;">
-  <div>
-    <h4>MobileNet2.0 Classification Report</h4>
-    <img src="model/mobilenet2.0_benchmarks/classification_report.png" alt="MobileNet2.0 Classification Report" width="300"/>
-  </div>
-  <div>
-    <h4>CNN Classification Report</h4>
-    <img src="model/cnn_benchmarks/classification_report.png" alt="CNN Classification Report" width="300"/>
-  </div>
-</div>
+### 🔍 Visual Comparisons
 
-The MobileNet2.0-inspired architecture performs better than the traditional CNN model, with a test accuracy of 92.78% and a test loss of ~0.256, compared to the CNN's 76.68% accuracy and ~0.833 loss. This is due to the use of depthwise separable convolutions and inverted residuals, which improve efficiency in image classification.
+| MobileNet2.0 Confusion Matrix | CNN Confusion Matrix |
+|-------------------------------|----------------------|
+| ![MobileNet2.0 Confusion Matrix](assets/mobilenet2.0_benchmarks/confusion_matrix.png) | ![CNN Confusion Matrix](assets/cnn_benchmarks/confusion_matrix.png) |
+
+| MobileNet2.0 Classification Report | CNN Classification Report |
+|------------------------------------|---------------------------|
+| ![MobileNet2.0 Classification Report](assets/mobilenet2.0_benchmarks/classification_report.png) | ![CNN Classification Report](assets/cnn_benchmarks/classification_report.png) |
 
 ---
 

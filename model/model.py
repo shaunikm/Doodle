@@ -10,13 +10,8 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l2
-from tensorflow.keras.mixed_precision import set_global_policy
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
-import seaborn as sns
-import pandas as pd
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
@@ -132,63 +127,6 @@ tf.keras.models.save_model(
 with custom_object_scope({'Cast': tf.keras.layers.Layer}):
     model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'))
 
-output_dir = os.path.join(os.path.dirname(__file__), 'mobilenet2.0_benchmarks')
-os.makedirs(output_dir, exist_ok=True)
-
-plt.figure(figsize=(10, 5))
-plt.plot(history.history['loss'], label='Train Loss')
-plt.plot(history.history['val_loss'], label='Validation Loss')
-plt.title('Training and Validation Loss')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.legend()
-plt.grid(True)
-plt.savefig(os.path.join(output_dir, 'benchmarks_loss.png'))
-plt.close()
-
-plt.figure(figsize=(10, 5))
-plt.plot(history.history['accuracy'], label='Train Accuracy')
-plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-plt.title('Training and Validation Accuracy')
-plt.xlabel('Epochs')
-plt.ylabel('Accuracy')
-plt.legend()
-plt.grid(True)
-plt.savefig(os.path.join(output_dir, 'benchmarks_accuracy.png'))
-plt.close()
-
 test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test)
-print(f"Test Loss: {test_loss}")
-print(f"Test Accuracy: {test_accuracy}")
-
-y_pred = model.predict(X_test_rgb)
-y_pred_classes = np.argmax(y_pred, axis=1)
-y_true = np.argmax(y_test, axis=1)
-
-conf_matrix = confusion_matrix(y_true, y_pred_classes)
-print("Confusion Matrix:")
-print(conf_matrix)
-
-plt.figure(figsize=(10, 7))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
-plt.title('Confusion Matrix')
-plt.xlabel('Predicted')
-plt.ylabel('True')
-plt.savefig(os.path.join(output_dir, 'confusion_matrix.png'))
-plt.close()
-
-class_report = classification_report(y_true, y_pred_classes, output_dict=True)
-print("Classification Report:")
-print(class_report)
-
-plt.figure(figsize=(10, 7))
-sns.heatmap(pd.DataFrame(class_report).iloc[:-1, :].T, annot=True, cmap='Blues')
-plt.title('Classification Report')
-plt.xlabel('Metrics')
-plt.ylabel('Classes')
-plt.savefig(os.path.join(output_dir, 'classification_report.png'))
-plt.close()
-
-test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test, verbose=2)
 print(f"Test Loss: {test_loss}")
 print(f"Test Accuracy: {test_accuracy}")
