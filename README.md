@@ -1,28 +1,25 @@
-MobileNet2.0 Benchmarks:
-Test Loss: 0.25598567724227905
-Test Accuracy: 0.9277620315551758
-model/mobilenet2.0_benchmarks/classification_report.png
-model/mobilenet2.0_benchmarks/confusion_matrix.png
-
-
 <div align="center">
   <h1>Doodle</h1>
   <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"/>
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/>
   <br>
-  made by Shaunik Musukula
+  <em>made by Shaunik Musukula</em>
 </div>
 
-## Table of Contents
-- [<code>🏗️ Model Architecture</code>](#model-architecture)
-- [<code>📊 Benchmarks</code>](#benchmarks)
-- [<code>🙏 Acknowledgments</code>](#acknowledgments)
+---
+
+## 📚 Table of Contents
+- [🏗️ Model Architecture](#model-architecture)
+- [📊 Benchmarks](#benchmarks)
+- [🙏 Acknowledgments](#acknowledgments)
+
+---
 
 ## 🏗️ Model Architecture
 
 The project explores two model architectures for image classification tasks:
 
-### CNN Architecture
+### 👁️ CNN Architecture
 The CNN model is structured with 3 convolutional blocks followed by fully connected layers. Each block consists of:
 
 - **Convolutional Layers**: Two convolutional layers with 3x3 filters, ReLU activation, and L2 regularization to prevent overfitting.
@@ -38,8 +35,8 @@ The final layers include:
 
 The model is compiled with the **Adam optimizer** and uses **sparse categorical cross-entropy** as the loss function, with **accuracy** as the evaluation metric.
 
-### MobileNet2.0 Inspired Architecture
-This architecture is built upon the efficient design principles of MobileNet2.0, focusing on reducing computational complexity while maintaining high accuracy:
+### 🪶 MobileNet2.0 Architecture
+This architecture builds upon MobileNet2.0, focusing on reducing complexity while maintaining high accuracy:
 
 - **Depthwise Separable Convolutions**: Utilized to decompose standard convolutions into a depthwise convolution followed by a pointwise convolution, significantly reducing the number of parameters and computational cost.
 - **Inverted Residuals with Linear Bottlenecks**: Implemented to enhance feature reuse and maintain a lightweight model structure. This involves using shortcut connections between bottleneck layers.
@@ -53,22 +50,22 @@ The model is compiled with the **Adam optimizer** and uses **sparse categorical 
 
 ## 📊 Benchmarks
 
-### MobileNet2.0 Inspired Benchmarks
+### 📈 MobileNet2.0 Inspired Benchmarks
 - **Test Loss**: 0.25598567724227905
 - **Test Accuracy**: 0.9277620315551758
 
 ![Confusion Matrix](model/mobilenet2.0_benchmarks/confusion_matrix.png)
 ![Classification Report](model/mobilenet2.0_benchmarks/classification_report.png)
 
-### CNN Benchmarks
+### 📉 CNN Benchmarks
 - **Test Loss**: 0.8327332735061646
 - **Test Accuracy**: 0.7668496966362
 
 ![Confusion Matrix](model/cnn_benchmarks/confusion_matrix.png)
 ![Classification Report](model/cnn_benchmarks/classification_report.png)
 
-### Comparison
-The MobileNet2.0 inspired architecture demonstrates superior performance over the traditional CNN model, achieving higher accuracy and lower test loss. This is largely due to the use of depthwise separable convolutions and inverted residuals, which optimize the model for both speed and accuracy in image classification tasks.
+### 🔍 Comparison
+The MobileNet2.0-inspired architecture performs better than the traditional CNN model, with a test accuracy of 92.78% and a test loss of ~0.256, compared to the CNN's 76.68% accuracy and ~0.833 loss. This is due to the use of depthwise separable convolutions and inverted residuals, which improve efficiency in image classification.
 
 ---
 
