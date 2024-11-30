@@ -61,8 +61,8 @@ The model is compiled with the **Adam optimizer** and uses **sparse categorical 
 ![Classification Report](model/mobilenet2.0_benchmarks/classification_report.png)
 
 ### CNN Benchmarks
-- **Test Loss**: [insert cnn test loss later]
-- **Test Accuracy**: [insert cnn test accuracy later]
+- **Test Loss**: 0.8327332735061646
+- **Test Accuracy**: 0.7668496966362
 
 ![Confusion Matrix](model/cnn_benchmarks/confusion_matrix.png)
 ![Classification Report](model/cnn_benchmarks/classification_report.png)
