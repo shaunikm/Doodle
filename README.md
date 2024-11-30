@@ -1,8 +1,8 @@
 # Doodle
-by Shaunik Musukula
-
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
+<div align="center">
+  <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"/>
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/>
+</div>
 
 ## Table of Contents
 - [Model Architecture](#model-architecture)
@@ -37,7 +37,7 @@ The model is compiled with the **Adam optimizer** and uses **sparse categorical 
 ### Classification Report
 ![Classification Report](model/cnn_benchmarks/classification_report.png)
 
-These benchmarks are saved as images in [`model/cnn_benchmarks`](model/cnn_benchmarks).
+These benchmarks are saved as images in [model/cnn_benchmarks](model/cnn_benchmarks).
 
 ---
 
