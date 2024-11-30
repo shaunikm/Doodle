@@ -13,6 +13,8 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras.mixed_precision import set_global_policy
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
@@ -150,7 +152,7 @@ checkpoint = ModelCheckpoint(
 )
 
 try:
-    model.fit(
+    history = model.fit(
         train_gen,
         steps_per_epoch=len(X_train_rgb) // 32,
         epochs=10,
@@ -159,6 +161,65 @@ try:
     )
 except KeyboardInterrupt:
     print("Training interrupted... saving model now...")
+
+# Plotting the training and validation loss
+plt.figure(figsize=(10, 5))
+plt.plot(history.history['loss'], label='Train Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Training and Validation Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.savefig('benchmarks_loss.png')
+plt.close()
+
+# plotting the training and val accuracy
+plt.figure(figsize=(10, 5))
+plt.plot(history.history['accuracy'], label='Train Accuracy')
+plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
+plt.title('Training and Validation Accuracy')
+plt.xlabel('Epochs')
+plt.ylabel('Accuracy')
+plt.legend()
+plt.grid(True)
+plt.savefig('benchmarks_accuracy.png')
+plt.close()
+
+test_loss, test_accuracy = model.evaluate(X_test_rgb, y_test)
+print(f"Test Loss: {test_loss}")
+print(f"Test Accuracy: {test_accuracy}")
+
+# predictions and confusion matrix
+y_pred = model.predict(X_test_rgb)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true = np.argmax(y_test, axis=1)
+
+conf_matrix = confusion_matrix(y_true, y_pred_classes)
+print("Confusion Matrix:")
+print(conf_matrix)
+
+# classification Report
+class_report = classification_report(y_true, y_pred_classes)
+print("Classification Report:")
+print(class_report)
+
+# ROC curve and AUC
+fpr, tpr, _ = roc_curve(y_true, y_pred[:, 1])
+roc_auc = auc(fpr, tpr)
+
+plt.figure(figsize=(10, 5))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label=f'ROC curve (area = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc="lower right")
+plt.grid(True)
+plt.savefig('benchmarks_roc.png')
+plt.close()
 
 tf.keras.models.save_model(
     model, os.path.join(os.path.dirname(__file__), 'model', 'accelerated_model.keras'), overwrite=True,
