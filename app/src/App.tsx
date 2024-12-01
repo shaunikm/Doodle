@@ -1,10 +1,32 @@
 import { useRef, useState, useEffect } from 'react';
 import Canvas, { Controls } from './Canvas';
 import * as tf from '@tensorflow/tfjs';
-import * as cocoSsd from '@tensorflow-models/coco-ssd';
-import * as sketch from '@magenta/sketch';
+import { Regularizer } from '@tensorflow/tfjs-layers/dist/regularizers';
 
 type Tool = 'draw' | 'erase';
+
+class L2Regularizer extends Regularizer {
+  static className = 'L2Regularizer';
+  private l2: number;
+
+  constructor(config: { l2: number }) {
+    super();
+    this.l2 = config.l2;
+  }
+
+  apply(x: tf.Tensor): tf.Scalar {
+    return tf.tidy(() => {
+      const regularization = tf.mul(this.l2, tf.sum(tf.square(x)));
+      return tf.scalar(regularization.arraySync() as number);
+    });
+  }
+
+  getConfig() {
+    return { l2: this.l2 };
+  }
+}
+
+tf.serialization.registerClass(L2Regularizer);
 
 function App() {
   const [currentTool, setCurrentTool] = useState<Tool>('draw');
@@ -12,20 +34,7 @@ function App() {
   const [prediction, setPrediction] = useState<string | null>(null);
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const loadSketchRNN = async () => {
-      try {
-        const model = new sketch.SketchRNN('cat');
-        await model.initialize();
-        console.log('SketchRNN model loaded');
-      } catch (error) {
-        console.error('Error loading SketchRNN model:', error);
-      }
-    };
-
-    loadSketchRNN();
-  }, []);
+  const [categories, setCategories] = useState<string[]>([]);
 
   useEffect(() => {
     const setBackend = async () => {
@@ -39,6 +48,21 @@ function App() {
     };
 
     setBackend();
+  }, []);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch('/model/data/categories.txt');
+        const text = await response.text();
+        const categoriesArray = text.split('\n').map(line => line.trim()).filter(line => line);
+        setCategories(categoriesArray);
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    };
+
+    loadCategories();
   }, []);
 
   const clearCanvas = () => {
@@ -58,10 +82,8 @@ function App() {
     if (!canvas) return;
 
     try {
-      // Load the COCO-SSD model
-      const model = await cocoSsd.load();
+      const model = await tf.loadLayersModel('/tfjs_model/model.json');
 
-      // Get the image data from the canvas
       const imageData = canvas.toDataURL('image/png');
       setImageDataUrl(imageData);
 
@@ -74,17 +96,25 @@ function App() {
 
       console.log('Image loaded for classification:', img);
 
-      // Use the model to detect objects in the image
-      const predictions = await model.detect(img);
-      console.log('Predictions:', predictions);
+      const tensor = tf.browser.fromPixels(img)
+        .resizeNearestNeighbor([28, 28])
+        .toFloat()
+        .div(tf.scalar(255.0))
+        .expandDims();
 
-      if (predictions.length > 0) {
-        setPrediction(predictions[0].class);
+      const predictions = model.predict(tensor) as tf.Tensor;
+      const predictionArray = await predictions.array() as number[][];
+      const predictedIndex = predictionArray[0].indexOf(Math.max(...predictionArray[0]));
+
+      if (categories.length > 0) {
+        const predictedCategory = categories[predictedIndex];
+        setPrediction(predictedCategory);
       } else {
-        setPrediction('No prediction');
+        console.error('Categories not loaded');
       }
+
     } catch (error) {
-      console.error('Error using COCO-SSD model:', error);
+      console.error('Error using custom model:', error);
     }
   };
 
