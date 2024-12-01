@@ -6,6 +6,8 @@
   <em>made by Shaunik Musukula</em>
 </div>
 
+assets/demos/doodle_demo_windmill.mov
+
 ---
 
 ## 📚 Installation

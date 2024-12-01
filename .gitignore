@@ -5,3 +5,8 @@ rollback/
 
 # ignore pycache
 __pycache__/
+
+# macOS Finder files
+.DS_Store
+# ignore vscode settings
+.vscode/
