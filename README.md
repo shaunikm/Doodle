@@ -9,11 +9,11 @@
   [![Vite](https://img.shields.io/badge/vite-%5E5.0.0-646CFF?logo=vite)](https://vitejs.dev/)
 </div>
 
-<div align="center"><em>Created by Shaunik Musukula</em></div>
-
+<div align="center">Created by Shaunik Musukula</div>
+<br>
 <div align="center">
   <img src="assets/demos/doodle_demo_windmill.gif" alt="Doodle Demo"/>
-  <p><small><em>Ignore the horrible drawing</em></small></p>
+  <p style="font-size: 12px;"><em>Ignore the horrible drawing</em></p>
 </div>
 
 
