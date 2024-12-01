@@ -6,13 +6,23 @@
   <em>made by Shaunik Musukula</em>
 </div>
 
-<div align="center">
-  <img src="assets/demos/doodle_demo_windmill.gif" alt="Doodle Demo" />
-</div>
+![Doodle Demo](assets/demos/doodle_demo_windmill.gif)
 
 ---
 
-## 📚 Installation
+## 📚 Table of Contents
+- [<code>⚙️ Installation</code>](#-installation)
+- [<code>🏗️ Model Architecture</code>](#-model-architecture)
+  - [<code>🧠 MobileNet2.0 Architecture</code>](#-mobilenet20-architecture)
+  - [<code>👁️ CNN Architecture</code>](#-cnn-architecture)
+- [<code>📊 Benchmarks</code>](#-benchmarks)
+  - [<code>🚀 Performance Summary</code>](#-performance-summary)
+  - [<code>🔍 Visual Comparisons</code>](#-visual-comparisons)
+- [<code>🙏 Acknowledgments</code>](#-acknowledgments)
+
+---
+
+## ⚙️ Installation
 
 To set up the project, follow these steps for both the `app` and `model` folders:
 
@@ -68,17 +78,6 @@ To set up the project, follow these steps for both the `app` and `model` folders
    ```
 
 5. You're all set! :)
-
----
-
-## 📚 Table of Contents
-- [<code>🏗️ Model Architecture</code>](#model-architecture)
-  - [<code>🧠 MobileNet2.0 Architecture</code>](#🧠-mobilenet20-architecture)
-  - [<code>👁️ CNN Architecture</code>](#👁️-cnn-architecture)
-- [<code>📊 Benchmarks</code>](#📊-benchmarks)
-  - [<code>📈 Performance Summary</code>](#📈-performance-summary)
-  - [<code>🔍 Visual Comparisons</code>](#🔍-visual-comparisons)
-- [<code>🙏 Acknowledgments</code>](#🙏-acknowledgments)
 
 ---
 
