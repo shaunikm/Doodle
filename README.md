@@ -7,8 +7,10 @@
   [![TensorFlow](https://img.shields.io/badge/tensorflow-2.10-yellow)](https://tensorflow.org)
   [![React](https://img.shields.io/badge/react-%5E18.0.0-blue?logo=react)](https://reactjs.org/)
   [![Vite](https://img.shields.io/badge/vite-%5E5.0.0-646CFF?logo=vite)](https://vitejs.dev/)
-  <sub>Created by Shaunik Musukula</sub></p>
 </div>
+
+<div align="center"><em>Created by Shaunik Musukula</em></div>
+
 <div align="center">
   <img src="assets/demos/doodle_demo_windmill.gif" alt="Doodle Demo"/>
   <p><small><em>Ignore the horrible drawing</em></small></p>
