@@ -13,7 +13,6 @@
 <br>
 <div align="center">
   <img src="assets/demos/doodle_demo_windmill.gif" alt="Doodle Demo"/>
-  <p style="font-size: 12px;"><em>Ignore the horrible drawing</em></p>
 </div>
 
 
