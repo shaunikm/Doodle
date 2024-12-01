@@ -12,6 +12,9 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@magenta/sketch": "^0.1.4",
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
     "@tensorflow-models/coco-ssd": "^2.2.3",
     "@tensorflow-models/mobilenet": "^2.1.1",
     "@tensorflow/tfjs": "^4.22.0",
@@ -19,14 +22,20 @@
     "@tensorflow/tfjs-core": "^4.22.0",
     "@tensorflow/tfjs-data": "^4.22.0",
     "@tensorflow/tfjs-layers": "^4.22.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "express": "^4.21.1",
+    "lucide-react": "^0.462.0",
     "multer": "^1.4.5-lts.1",
     "node-fetch": "^3.3.2",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@shadcn/ui": "^0.0.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react-swc": "^3.5.0",

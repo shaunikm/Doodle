@@ -11,13 +11,13 @@ interface ControlsProps {
 
 export const Controls: React.FC<ControlsProps> = ({ currentTool, setCurrentTool, onClear }) => {
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-2">
       <button
         onClick={() => setCurrentTool('draw')}
-        className={`p-2.5 rounded transition-all duration-200 border border-[#2a2a2a] hover:border-[#42b883]/50 group ${
+        className={`p-2.5 rounded-lg transition-all duration-200 border ${
           currentTool === 'draw'
-            ? 'bg-[#42b883]/20 border-[#42b883] shadow-[0_0_12px_0_rgba(66,184,131,0.3)]'
-            : 'bg-[#2a2a2a] hover:bg-[#333]'
+            ? 'bg-[#42b883]/10 border-[#42b883] shadow-lg shadow-[#42b883]/20'
+            : 'border-[#2a2a2a] hover:border-[#42b883]/50 bg-[#2a2a2a]/50 backdrop-blur'
         }`}
         title="Draw"
       >
@@ -29,10 +29,10 @@ export const Controls: React.FC<ControlsProps> = ({ currentTool, setCurrentTool,
       </button>
       <button
         onClick={() => setCurrentTool('erase')}
-        className={`p-2.5 rounded transition-all duration-200 border border-[#2a2a2a] hover:border-[#94a3b8]/50 group ${
+        className={`p-2.5 rounded-lg transition-all duration-200 border ${
           currentTool === 'erase'
-            ? 'bg-[#94a3b8]/20 border-[#94a3b8] shadow-[0_0_12px_0_rgba(148,163,184,0.3)]'
-            : 'bg-[#2a2a2a] hover:bg-[#333]'
+            ? 'bg-[#94a3b8]/10 border-[#94a3b8] shadow-lg shadow-[#94a3b8]/20'
+            : 'border-[#2a2a2a] hover:border-[#94a3b8]/50 bg-[#2a2a2a]/50 backdrop-blur'
         }`}
         title="Erase"
       >
@@ -44,7 +44,7 @@ export const Controls: React.FC<ControlsProps> = ({ currentTool, setCurrentTool,
       </button>
       <button
         onClick={onClear}
-        className="p-2.5 rounded transition-all duration-200 border border-[#2a2a2a] hover:border-[#ff6b6b]/50 hover:bg-[#333] bg-[#2a2a2a] group"
+        className="p-2.5 rounded-lg transition-all duration-200 border border-[#2a2a2a] hover:border-[#ff6b6b]/50 hover:bg-[#333] bg-[#2a2a2a] group"
         title="Clear"
       >
         <TrashIcon className="w-5 h-5 text-[#ff6b6b] opacity-80 group-hover:opacity-100 transition-opacity" />
