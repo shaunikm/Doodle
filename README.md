@@ -6,7 +6,9 @@
   <em>made by Shaunik Musukula</em>
 </div>
 
-assets/demos/doodle_demo_windmill.mov
+<div align="center">
+  <img src="assets/demos/doodle_demo_windmill.gif" alt="Doodle Demo" />
+</div>
 
 ---
 
