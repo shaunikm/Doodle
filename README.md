@@ -1,12 +1,20 @@
 <div align="center">
+  <img src="assets/logo.svg" width="200" alt="Doodle Logo"/>
   <h1>Doodle</h1>
-  <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"/>
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License"/>
-  <br>
-  <em>made by Shaunik Musukula</em>
+  
+  [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/shaunikm/doodle)
+  [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+  [![TensorFlow](https://img.shields.io/badge/tensorflow-2.10-yellow)](https://tensorflow.org)
+  [![React](https://img.shields.io/badge/react-%5E18.0.0-blue?logo=react)](https://reactjs.org/)
+  [![Vite](https://img.shields.io/badge/vite-%5E5.0.0-646CFF?logo=vite)](https://vitejs.dev/)
+  
+  <p><em>An intelligent doodling application powered by deep learning</em><br>
+  <sub>Created by Shaunik Musukula</sub></p>
 </div>
 
-![Doodle Demo](assets/demos/doodle_demo_windmill.gif)
+<div align="center">
+  <img src="assets/demos/doodle_demo_windmill.gif" alt="Doodle Demo"/>
+</div>
 
 ---
 
@@ -33,31 +41,31 @@ To set up the project, follow these steps for both the `app` and `model` folders
 
 ### Setting up the `app` folder
 
-1. Navigate to the `app` directory:
+1. Nav to the `app` directory:
    ```bash
    cd app
    ```
 
-2. Install the dependencies:
+2. Install dependencies:
    ```bash
    npm install
    ```
 
-3. Start the development server:
+3. Start the dev server:
    ```bash
    npm run dev
    ```
 
 ### Setting up the `model` folder
 
-1. Navigate to the `model` directory:
+1. Nav to the `model` directory:
    ```bash
    cd model
    ```
 
-2. Create a virtual environment (Python 3.10):
+2. Create a virtual environment (with Python 3.10):
    ```bash
-   python -m venv venv
+   python -m venv your_env_name
    ```
 
 3. Activate the virtual environment:
@@ -72,7 +80,7 @@ To set up the project, follow these steps for both the `app` and `model` folders
      source venv/bin/activate
      ```
 
-4. Install the required packages:
+4. Install packages:
    ```bash
    pip install -r requirements.txt
    ```
