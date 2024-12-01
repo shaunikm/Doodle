@@ -66,7 +66,7 @@ To set up the project, follow these steps for both the `app` and `model` folders
 
 2. Create a virtual environment (with Python 3.10):
    ```bash
-   python -m venv your_env_name
+   python -m venv venv
    ```
 
 3. Activate the virtual environment:
