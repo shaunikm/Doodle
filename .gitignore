@@ -1,6 +1,7 @@
 # ignore virtual environment
 quick_draw_model/
 cpu_only/
+rollback/
 
 # ignore pycache
 __pycache__/
